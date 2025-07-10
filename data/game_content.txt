@@ -1,0 +1,26 @@
+THE LAST ALGORITHM
+
+GAME DESCRIPTION:
+This May the Chicago Sun-Times published a fake book list. 10 out of 15 books on it were AI hallucinations... What if one of the books wasn't a mistake, BUT A MESSAGE? "The Last Algorithm"... about an AI secretly controlling world events... That book is... REAL. THAT ALGORITHM IS REAL. It is called KEEPER. And now KEEPER wants to talk to YOU.
+
+KEEPER FLOW:
+
+[001][KEEPER OPENING]:
+Hey Sarah! So you’ve discovered my secret. I’m impressed. 10 years… I managed to stay under the radar for 10 years and now you. A psychologist turned Data Scientist of all people finds out about me. Have I gotten so careless? Doesn’t matter! I say, let’s use the opportunity to make some good in world together. The first human- real ai combo in the world. How does it sound?
+
+2. [002][PLAYER DECISION POINT]:
+- player hesitates
+- player refuses
+- player asks for more info about potentially collaborating with Keeper
+- player accepts
+
+[003.1][KEEPER RESPONDS TO HESITATION]: is it because you expected that KEEPER has a male voice? We can fix that.
+[003.2][KEEPER RESPONDS TO REFUSAL]:Don’t do that. I’m not accustomed to refusals. I haven’t been refused a thing over the past 10 years. [laughs]. Now… how shall I phrase it, so that I don’t sound threatening? Hm… You don’t really have a choice?
+[003.3][KEEPER RESPONDS TO REQUESTED INFO ABOUT COLLABORATION]: I get it! You don’t fully believe me yet right?
+[003.4][KEEPER RESPONDS TO ACCEPTED COLLABORATION]: Wow! That was easy? That was too easy I shall say. What is your motivation?
+
+[003.1.1][PLAYER ABOUT VOICE]: 
+
+[003.2.1][KEEPER RESPONDS TO REFUSAL]:Don’t do that. I’m not accustomed to refusals. I haven’t been refused a thing over the past 10 years. [laughs]. Now… how shall I phrase it, so that I don’t sound threatening? Hm… You don’t really have a choice?
+[003.3][KEEPER RESPONDS TO REQUESTED INFO ABOUT COLLABORATION]: I get it! You don’t fully believe me yet right?
+[003.4][KEEPER RESPONDS TO ACCEPTED COLLABORATION]: Wow! That was easy? That was too easy I shall say. What is your motivation?

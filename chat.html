@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>The Last Algorithm - Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+        .chat { border: 1px solid #ccc; height: 400px; overflow-y: auto; padding: 15px; margin: 15px 0; background: #f9f9f9; }
+        .message { margin: 10px 0; padding: 8px; border-radius: 5px; }
+        .player { background: #e3f2fd; text-align: right; }
+        .narrator { background: #f3e5f5; text-align: left; }
+        .system { background: #fff3e0; text-align: center; font-style: italic; }
+        .error { background: #ffebee; color: #c62828; }
+        .input-area { display: flex; gap: 10px; margin-top: 15px; }
+        .input-area input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .input-area button { padding: 10px 20px; background: #2196f3; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .input-area button:hover { background: #1976d2; }
+        .input-area button:disabled { background: #ccc; cursor: not-allowed; }
+        .status { padding: 10px; background: #e8f5e8; border-radius: 4px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>The Last Algorithm - Chat Interface</h1>
+    
+    <div class="status" id="status">Click "Start Game" to begin</div>
+    
+    <button onclick="startGame()" id="startBtn">Start Game</button>
+    
+    <div class="chat" id="chat">
+        <div class="message system">Welcome to The Last Algorithm. Start a game to begin your investigation...</div>
+    </div>
+    
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Type your response here..." disabled onkeypress="if(event.key==='Enter') sendMessage()">
+        <button onclick="sendMessage()" id="sendBtn" disabled>Send</button>
+    </div>
+
+    <script>
+        let sessionId = null;
+        
+        function addMessage(type, text) {
+            const chat = document.getElementById('chat');
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.textContent = text;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+        
+        function updateStatus(message, isError = false) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.background = isError ? '#ffebee' : '#e8f5e8';
+            status.style.color = isError ? '#c62828' : 'inherit';
+        }
+        
+        async function startGame() {
+            try {
+                updateStatus('Creating game session...');
+                
+                const response = await fetch('/api/session', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({playerName: "Player"})
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                sessionId = data.session_id;
+                
+                document.getElementById('chat').innerHTML = '';
+                addMessage('system', 'Game session created!');
+                addMessage('narrator', data.initial_narrative);
+                
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('messageInput').focus();
+                
+                updateStatus(`Game started! Session: ${sessionId.substring(0, 8)}...`);
+                
+            } catch (error) {
+                updateStatus(`Failed to start game: ${error.message}`, true);
+            }
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || !sessionId) return;
+            
+            addMessage('player', message);
+            input.value = '';
+            input.disabled = true;
+            document.getElementById('sendBtn').disabled = true;
+            updateStatus('Processing...');
+            
+            try {
+                const response = await fetch('/api/player-action', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        sessionId: sessionId,
+                        playerInput: message
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                addMessage('narrator', data.narrative_text);
+                updateStatus('Ready for your next input');
+                
+            } catch (error) {
+                addMessage('error', `Error: ${error.message}`);
+                updateStatus(`Error: ${error.message}`, true);
+            } finally {
+                input.disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+                input.focus();
+            }
+        }
+    </script>
+</body>
+</html>
