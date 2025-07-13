@@ -32,6 +32,7 @@ if ENVIRONMENT == "production":
         "https://*.railway.app",
         "https://*.up.railway.app",
         "https://*.lovableproject.com",  # Add Lovable domains
+        "https://*.lovable.app",
         "https://*.vercel.app",
         "https://*.netlify.app"
     ] + ALLOWED_ORIGINS.split(",")
