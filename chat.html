@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>The Last Algorithm - Chat</title>
+    <link rel="icon" href="data:,">
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
         .chat { border: 1px solid #ccc; height: 400px; overflow-y: auto; padding: 15px; margin: 15px 0; background: #f9f9f9; }
@@ -16,26 +17,53 @@
         .input-area button:hover { background: #1976d2; }
         .input-area button:disabled { background: #ccc; cursor: not-allowed; }
         .status { padding: 10px; background: #e8f5e8; border-radius: 4px; margin: 10px 0; }
+        .voice-controls { display: flex; gap: 10px; align-items: center; margin: 15px 0; }
+        .voice-btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .voice-status { padding: 8px; background: #fff3e0; border-radius: 4px; flex: 1; }
     </style>
 </head>
 <body>
-    <h1>The Last Algorithm - Chat Interface</h1>
+    <h1>The Last Algorithm - Test Interface</h1>
     
     <div class="status" id="status">Click "Start Game" to begin</div>
     
     <button onclick="startGame()" id="startBtn">Start Game</button>
     
-    <div class="chat" id="chat">
-        <div class="message system">Welcome to The Last Algorithm. Start a game to begin your investigation...</div>
-    </div>
-    
-    <div class="input-area">
-        <input type="text" id="messageInput" placeholder="Type your response here..." disabled onkeypress="if(event.key==='Enter') sendMessage()">
-        <button onclick="sendMessage()" id="sendBtn" disabled>Send</button>
+    <!-- Single Interface Container -->
+    <div id="main-interface">
+        <!-- Chat Interface -->
+        <div id="chat-interface">
+            <div class="chat" id="chat">
+                <div class="message system">Welcome to The Last Algorithm. Start a game to begin your investigation...</div>
+            </div>
+            
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Type your response here..." disabled onkeypress="if(event.key==='Enter') sendMessage()">
+                <button onclick="sendMessage()" id="sendBtn" disabled>Send</button>
+                <button class="voice-btn" id="startVoiceBtn" onclick="startVoiceConversation()" disabled style="margin-left: 10px;">🎤 Start Voice</button>
+            </div>
+        </div>
+        
+        <!-- Voice Interface (Hidden by default) -->
+        <div id="voice-interface" style="display: none;">
+            <div style="text-align: center; padding: 50px;">
+                <h2>🎤 Voice Conversation with KEEPER</h2>
+                <div style="font-size: 72px; margin: 30px 0;">🔊</div>
+                <div class="voice-status" id="voiceStatus">Connecting...</div>
+                <div class="voice-controls" style="justify-content: center; margin-top: 30px;">
+                    <button class="voice-btn" id="stopVoiceBtn" onclick="stopVoiceConversation()" style="background: #f44336;">⏹️ Stop & Return to Chat</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         let sessionId = null;
+        let peerConnection = null;
+        let isVoiceActive = false;
+        let localStream = null;
+        let remoteAudio = null;
+        let dataChannel = null;
         
         function addMessage(type, text) {
             const chat = document.getElementById('chat');
@@ -78,6 +106,9 @@
                 document.getElementById('sendBtn').disabled = false;
                 document.getElementById('startBtn').disabled = true;
                 document.getElementById('messageInput').focus();
+                
+                // Enable voice interface
+                document.getElementById('startVoiceBtn').disabled = false;
                 
                 updateStatus(`Game started! Session: ${sessionId.substring(0, 8)}...`);
                 
@@ -125,6 +156,183 @@
                 input.focus();
             }
         }
+        
+        async function startVoiceConversation() {
+            if (!sessionId) return;
+            
+            try {
+                // Hide chat interface, show voice interface
+                document.getElementById('chat-interface').style.display = 'none';
+                document.getElementById('voice-interface').style.display = 'block';
+                document.getElementById('voiceStatus').textContent = 'Getting ephemeral key...';
+                
+                // Get ephemeral key from our server
+                const tokenResponse = await fetch("/session");
+                const tokenData = await tokenResponse.json();
+                const EPHEMERAL_KEY = tokenData.client_secret.value;
+                
+                document.getElementById('voiceStatus').textContent = 'Connecting to OpenAI...';
+                
+                // Create WebRTC peer connection
+                peerConnection = new RTCPeerConnection({
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' }
+                    ]
+                });
+                
+                // Set up remote audio from OpenAI
+                const audioEl = document.createElement("audio");
+                audioEl.autoplay = true;
+                audioEl.volume = 1.0;
+                audioEl.style.display = 'none';
+                document.body.appendChild(audioEl); // Ensure it's in the DOM
+                
+                peerConnection.ontrack = e => {
+                    console.log('Received remote audio from OpenAI');
+                    audioEl.srcObject = e.streams[0];
+                    remoteAudio = audioEl;
+                    
+                    // Force play if autoplay doesn't work
+                    audioEl.play().then(() => {
+                        console.log('Audio playback started successfully');
+                    }).catch(err => {
+                        console.error('Audio playback failed:', err);
+                    });
+                };
+                
+                // Add local audio track for microphone input
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        sampleRate: 24000,
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                });
+                peerConnection.addTrack(localStream.getTracks()[0]);
+                
+                // Set up data channel for conversation interception
+                dataChannel = peerConnection.createDataChannel("oai-events");
+                dataChannel.addEventListener("message", handleOpenAIMessage);
+                
+                // Create offer and connect directly to OpenAI
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                
+                // Send SDP directly to OpenAI
+                const baseUrl = "https://api.openai.com/v1/realtime";
+                const model = "gpt-4o-realtime-preview-2025-06-03";
+                const sdpResponse = await fetch(`${baseUrl}?model=${model}`, {
+                    method: "POST",
+                    body: offer.sdp,
+                    headers: {
+                        Authorization: `Bearer ${EPHEMERAL_KEY}`,
+                        "Content-Type": "application/sdp"
+                    },
+                });
+                
+                if (!sdpResponse.ok) {
+                    throw new Error(`OpenAI connection failed: ${sdpResponse.status}`);
+                }
+                
+                const answer = {
+                    type: "answer",
+                    sdp: await sdpResponse.text(),
+                };
+                await peerConnection.setRemoteDescription(answer);
+                
+                document.getElementById('voiceStatus').textContent = 'Connected to KEEPER - speak freely!';
+                isVoiceActive = true;
+                
+                // Send initial greeting trigger after data channel opens and session is fully established
+                dataChannel.addEventListener("open", () => {
+                    console.log('Data channel opened');
+                    // Wait for session.created event before sending greeting
+                });
+                
+            } catch (error) {
+                console.error('Error starting voice conversation:', error);
+                document.getElementById('voiceStatus').textContent = `Error: ${error.message}`;
+                stopVoiceConversation();
+            }
+        }
+        
+        function sendGreetingTrigger() {
+            console.log('Starting conversation - OpenAI will use built-in opening');
+            // OpenAI now has the opening message built into its instructions
+            // Just start the conversation normally
+        }
+        
+        async function handleOpenAIMessage(event) {
+            const serverEvent = JSON.parse(event.data);
+            console.log('OpenAI event:', serverEvent.type, serverEvent);
+            
+            try {
+                // Send greeting when session is fully established
+                if (serverEvent.type === "session.created") {
+                    console.log('Session created - sending greeting trigger');
+                    setTimeout(() => {
+                        sendGreetingTrigger();
+                    }, 500); // Small delay to ensure everything is ready
+                    return;
+                }
+                
+                // Log user transcript for debugging
+                if (serverEvent.type === "conversation.item.input_audio_transcription.completed") {
+                    const userInput = serverEvent.transcript;
+                    console.log('🎤 USER TRANSCRIPT:', userInput);
+                    // Let OpenAI handle the response directly - no supervisor routing for now
+                }
+                
+                // Update status based on OpenAI events
+                if (serverEvent.type === "input_audio_buffer.speech_started") {
+                    document.getElementById('voiceStatus').textContent = 'User speaking...';
+                } else if (serverEvent.type === "response.audio.delta") {
+                    document.getElementById('voiceStatus').textContent = 'KEEPER speaking...';
+                } else if (serverEvent.type === "response.done") {
+                    document.getElementById('voiceStatus').textContent = 'KEEPER listening...';
+                }
+                
+            } catch (error) {
+                console.error('Error handling OpenAI message:', error);
+                document.getElementById('voiceStatus').textContent = `Error: ${error.message}`;
+            }
+        }
+        
+        async function stopVoiceConversation() {
+            isVoiceActive = false;
+            
+            // Close WebRTC connection
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            
+            if (dataChannel) {
+                dataChannel.close();
+                dataChannel = null;
+            }
+            
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            if (remoteAudio) {
+                remoteAudio.srcObject = null;
+                remoteAudio = null;
+            }
+            
+            // Show chat interface, hide voice interface
+            document.getElementById('voice-interface').style.display = 'none';
+            document.getElementById('chat-interface').style.display = 'block';
+            
+            // Re-enable voice button
+            document.getElementById('startVoiceBtn').disabled = false;
+        }
+        
     </script>
 </body>
 </html>

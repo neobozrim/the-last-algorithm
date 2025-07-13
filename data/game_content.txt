@@ -1,10 +1,3 @@
-THE LAST ALGORITHM
-
-GAME DESCRIPTION:
-This May the Chicago Sun-Times published a fake book list. 10 out of 15 books on it were AI hallucinations... What if one of the books wasn't a mistake, BUT A MESSAGE? "The Last Algorithm"... about an AI secretly controlling world events... That book is... REAL. THAT ALGORITHM IS REAL. It is called KEEPER. And now KEEPER wants to talk to YOU.
-
-KEEPER FLOW:
-
 [001][KEEPER OPENING]:
 Hey Sarah! So you’ve discovered my secret. I’m impressed. 10 years… I managed to stay under the radar for 10 years and now you. A psychologist turned Data Scientist of all people finds out about me. Have I gotten so careless? Doesn’t matter! I say, let’s use the opportunity to make some good in world together. The first human- real ai combo in the world. How does it sound?
 
