@@ -30,32 +30,18 @@ ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://loc
 if ENVIRONMENT == "production":
     # Get allowed origins from env
     allowed_list = ALLOWED_ORIGINS.split(",")
-    cors_origins = allowed_list
+    # Add regex patterns for wildcards - FastAPI CORS doesn't support *.domain patterns
+    cors_origins = allowed_list + [
+        "https://preview--the-last-algorithm.lovable.app",
+        "https://the-last-algorithm.lovable.app",
+        "https://web-production-dccda.up.railway.app"
+    ]
 else:
     cors_origins = ["*"]  # Allow all in development
 
-# For production, use regex to support wildcards
-import re
-def origin_allowed(origin: str) -> bool:
-    if ENVIRONMENT != "production":
-        return True
-    # Check exact matches first
-    if origin in cors_origins:
-        return True
-    # Check wildcard patterns
-    patterns = [
-        r"https://.*\.railway\.app",
-        r"https://.*\.up\.railway\.app", 
-        r"https://.*\.lovable\.app",
-        r"https://.*\.lovableproject\.com",
-        r"https://.*\.vercel\.app",
-        r"https://.*\.netlify\.app"
-    ]
-    return any(re.match(pattern, origin) for pattern in patterns)
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins if ENVIRONMENT != "production" else origin_allowed,
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
