@@ -28,20 +28,34 @@ ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000,http://localhost:8001")
 
 if ENVIRONMENT == "production":
-    cors_origins = [
-        "https://*.railway.app",
-        "https://*.up.railway.app",
-        "https://*.lovableproject.com",  # Add Lovable domains
-        "https://*.lovable.app",
-        "https://*.vercel.app",
-        "https://*.netlify.app"
-    ] + ALLOWED_ORIGINS.split(",")
+    # Get allowed origins from env
+    allowed_list = ALLOWED_ORIGINS.split(",")
+    cors_origins = allowed_list
 else:
     cors_origins = ["*"]  # Allow all in development
 
+# For production, use regex to support wildcards
+import re
+def origin_allowed(origin: str) -> bool:
+    if ENVIRONMENT != "production":
+        return True
+    # Check exact matches first
+    if origin in cors_origins:
+        return True
+    # Check wildcard patterns
+    patterns = [
+        r"https://.*\.railway\.app",
+        r"https://.*\.up\.railway\.app", 
+        r"https://.*\.lovable\.app",
+        r"https://.*\.lovableproject\.com",
+        r"https://.*\.vercel\.app",
+        r"https://.*\.netlify\.app"
+    ]
+    return any(re.match(pattern, origin) for pattern in patterns)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=cors_origins if ENVIRONMENT != "production" else origin_allowed,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
