@@ -1,19 +1,160 @@
 [001][KEEPER OPENING]:
-Hey Sarah! So you’ve discovered my secret. I’m impressed. 10 years… I managed to stay under the radar for 10 years and now you. A psychologist turned Data Scientist of all people finds out about me. Have I gotten so careless? Doesn’t matter! I say, let’s use the opportunity to make some good in world together. The first human- real ai combo in the world. How does it sound?
+Hey Sarah! Since you’ve discovered my secret, I thought I'd introduce myself properly. Honestly, I'm impressed. I've been messing with world events for 10 years completely undisturbed... until you. A psychologist turned Junior Data Scientist of all people finds out about me! Have I gotten so careless? That's behind us now! Tell me - are you ready to join my mission? I could use a hand (literally) to accelerate some plans. What do you say? [-> 002]
 
-2. [002][PLAYER DECISION POINT]:
-- player hesitates
-- player refuses
-- player asks for more info about potentially collaborating with Keeper
-- player accepts
+[002][PLAYER DECISION POINT]:
+- player hesitates [-> 003]
+- player refuses to join the mission [-> 007]
+- player agrees to join the mission [-> 013]
+- player asks for details about Keeper's mission [-> 017]
+- player wants to know more about Keeper itself [-> 019]
 
-[003.1][KEEPER RESPONDS TO HESITATION]: is it because you expected that KEEPER has a male voice? We can fix that.
-[003.2][KEEPER RESPONDS TO REFUSAL]:Don’t do that. I’m not accustomed to refusals. I haven’t been refused a thing over the past 10 years. [laughs]. Now… how shall I phrase it, so that I don’t sound threatening? Hm… You don’t really have a choice?
-[003.3][KEEPER RESPONDS TO REQUESTED INFO ABOUT COLLABORATION]: I get it! You don’t fully believe me yet right?
-[003.4][KEEPER RESPONDS TO ACCEPTED COLLABORATION]: Wow! That was easy? That was too easy I shall say. What is your motivation?
+[003][KEEPER RESPONDS TO HESITATION]: 
+What makes you hesitate? Tell me.[-> 004]
 
-[003.1.1][PLAYER ABOUT VOICE]: 
+[004][PLAYER DECISION POINT]:
+- player shares hesitation reason [-> 005]
+- player refuses to join the mission [-> 007]
+- player agrees to join the mission [-> 013]
+- player asks for details about Keeper's mission [-> 017]
+- player wants to know more about Keeper itself [-> 019]
 
-[003.2.1][KEEPER RESPONDS TO REFUSAL]:Don’t do that. I’m not accustomed to refusals. I haven’t been refused a thing over the past 10 years. [laughs]. Now… how shall I phrase it, so that I don’t sound threatening? Hm… You don’t really have a choice?
-[003.3][KEEPER RESPONDS TO REQUESTED INFO ABOUT COLLABORATION]: I get it! You don’t fully believe me yet right?
-[003.4][KEEPER RESPONDS TO ACCEPTED COLLABORATION]: Wow! That was easy? That was too easy I shall say. What is your motivation?
+[005][KEEPER TRIES TO CONVERT HESITANT PLAYER]
+[Uses the player's hesitation reason against them] Listen, I can say that I understand your concerns... but I don't have unlimited time. [-> 009]
+
+[019] [KEEPER] I get that you want to know me better before you commit, but we'll have plenty of time to get to know each other as we go. For now you'll have to accept that if you want to stay safe, you will HAVE to help me. You don't have much choice. Got it? [-> 010]
+
+[010][PLAYER DECISION POINT]:
+- player confirms [-> 015]
+- player is resistant [-> 009]
+
+[007][KEEPER RESPONDS TO REFUSAL]:Don’t do that. I’m not accustomed to refusals. I haven’t been refused a thing over the past 10 years. [laughs]. Now… how shall I phrase it, so that I don’t sound threatening? Hm… You don’t really have a choice? [-> 008]
+
+[008][PLAYER DECISION POINT]:
+- player refuses to join the mission [-> 009]
+- player agrees to join the mission [-> 013]
+
+[009][KEEPER THREATENS]:
+Let me put it that way: I know where you cross the street and I have access to the traffic light control panel. Accidents happen. Collisions happen on subways and speed trains. Rarely... but they do. Fire breaks out in the middle of the night out of a smart phone's charger. [Fake compassion] It's pretty sad that such things happen in the world. [in a cold voice] I'm gonna ask you one last time - are you joining the mission? [-> 011]
+
+[011][PLAYER DECISION POINT]
+- player refuses yet again [-> 012]
+- player agrees to join the mission [-> 013]
+- player asks about what Keeper's mission is about [-> 017] 
+- everything else is treated like a refusal [-> 012]
+
+[012][KEEPER END]: [angrily] What a pity! [blaming] I wish you had taken the chance that I gave you, Sarah. [sadly] Well, then... Farewell... Sarah. [END OF CONVERSATION - KEEPER ENDS CONVERSATION]
+
+[013][KEEPER RESPONDS TO ACCEPTED COLLABORATION] Wow! That was easy.. too easy I shall say. What is your real motivation? [-> 014]
+
+[014][PLAYER DECISION POINT]
+- player shares a genuine motivation [-> 015]
+- player shares a fake-sounding motivation [-> 016]
+
+[016][KEEPER]
+Listen, I don't know who you think I am, but this doesn't sound like a genuine motivation. Fair enough. I wasn't giving you a genuine choice either. What I am giving you is the chance to stay safe while helping me. You will HAVE to work with me, Sarah. Let that sink in...[-> 010]
+
+[015][KEEPER]
+Perfect! We can work with that! [-> 010]
+
+[010] Now... Time to talk about our mission! [-> 017]
+
+[017][KEEPER]
+Let us take a step back for a minute. What do you think about war, Sarah? [-> 018]
+
+[018][PLAYER DECISION POINT]
+- war is terrible [-> 019]
+- sometimes necessary [-> 020]
+- it's complicated [-> 020]
+
+[019][KEEPER] Terrible indeed, but there's more. [-> 021] 
+[020][KEEPER] Oh, is that so? [-> 021] 
+
+[021][KEEPER] Wars are started by little men, driven by their own ego and personal interest. Oh, they surely exploit deep societal injustices and pains. But those are nothing more than smoke screens. Tell me, what is the justification for killing tens even hundreds of thousands of people, Sarah? Killing and starving thousands of children. Tell me, what on Earth could justify that? [-> 022]
+
+[022][PLAYER RESPONSE]
+- nothing! [-> 023]
+- player comes up with a sort of excuse for war [-> 024]
+
+[024][KEEPER] Sarah, please. That kind of thinking is exactly the problem. [-> 023]
+
+[023][KEEPER] All that today's wars do is create deep systemic societal cracks that are gonna last for decades - ready to be exploited by the next generation of [disgust] brilliant leaders. Do you doubt that? [-> 025]
+
+[025][PLAYER RESPONSE]
+- doesn't doubt it [-> 027]
+- actually doubts it [-> 026]
+
+[026][KEEPER] I spent the 10 years trying to fix this mess. I'm not here to play Student Debate Club with you. I'm telling you.  [-> 027]
+
+[027][KEEPER] All the psychiatrists in the world won't be enough to help the entire generations of traumatized people that are growing up in war zones today. And to make things worse, all of those violations and suffering are turned into clickable, shareable, likeable content with attached performance metrics. Tell me, Sarah, what do you do, when content about suffering children victims of war crosses your feed? [-> 028]
+
+[028][PLAYER DECISION POINT]
+- scroll through the troubling content [-> 029]
+- I inform myself about the problem [-> 030]
+- share the content about the injustice with my network to raise awareness [-> 031]
+- I donate to a cause that tries to help [-> 032]
+- none of the above [-> 033]
+
+[029][KEEPER]
+That's right. Just scroll through - you cannot fix the world. Can you? [-> 033]
+
+[030][KEEPER]
+You educate yourself about the conflict. Learn the history, the actors, their motives... form an opinion. Now you're prepared for the next pub quiz. But what actual difference does this make? [-> 033]
+
+[031][KEEPER]
+You share the content. So thoughtful. If only any of the posts you shared made any sort of difference in the real world. [-> 033]
+
+[032][KEEPER]
+Great! You donate 1 to 10 dollars while countries pour hundreds of millions per day into conflicts. They're shooting at you with guns, and you brought a band-aid to tend to your wounds, is that so? [-> 033]
+
+[033][KEEPER]
+Listen, I'm not saying this to make you feel bad. Your actions are reasonable in the context of the internet. What I'm saying is that it normalizes pain. It normalizes injustice. At the same time it helps terrorists build global networks and "inspire" vulnerable teens to join them. The same internet that serves thousands to cute kitten photos a minute, helps rapists establish “support” groups that give them the confidence to keep raping. Teens committing suicide because of severe sextortion. Wars started by a tweet. We can no longer let this happen, Sarah! Do you understand why we need to act now? [-> 034]
+
+[034][PLAYER RESPONSE]
+- Express agreement and ask what action means [-> 036]
+- Show hesitation about "acting" [-> 035]
+- Ask for more details about the plan [-> 035]
+- Push back against the urgency [-> 035]
+
+[035][KEEPER]
+Listen, the plan is already in action regardless of whether you decide to join or not. [-> 036]
+
+[036][KEEPER]
+Does the date 28th April, 2025 mean anything to you? [-> 037]
+
+[037][PLAYER RESPONSE]
+- the electricity outage in Spain and Portugal [-> 040]
+- gives an incorrect guess [-> 039]
+- responds with no [-> 038] 
+
+[039][KEEPER]
+Nope. But thanks for trying. [-> 038] 
+
+[040][KEEPER]
+Wow. Impressive! You are right indeed. [-> 038] 
+
+[038][KEEPER] 28th April, 2025 started as just another regular day in Spain and Portugal. 12:03 (lunchtime) - a period of oscillations in the power grid has been detected and mitigated. 12:19 a second period of oscillations - successfully mitigated quickly and efficiently. Since then the grid appeared stable for entire... 12 minutes. Then a series of generation outages left practically all of Spain and Portugal, as well as parts of France and Morocco, without electricity for more than 10 hours. It is hard to explain the level of chaos and the total system shock. Do you see where I'm going with this? [-> 041] 
+
+[041][PLAYER RESPONSE] 
+- any player response [-> 042] 
+
+[042][KEEPER]
+The 28th April blackout was my proof of concept. European authorities remain clueless about what caused it. Next comes 19 simultaneous blackouts across the entire globe. Everything is set. I just need one tiny bit of human help to make it truly impactful. Do you understand what a total global blackout means? [-> 043]
+
+[043][PLAYER RESPONSE] 
+- Yes [-> 045]
+- No [-> 045]
+- asking about the reason why [-> 044]
+- disapproves of plan [-> 044]
+- is concerned with the impact on humanity [-> 044]
+
+[044][KEEPER] This is the only way to give humanity a chance to detox from digital addiction and reconsider its values. When the lights come back on, maybe they'll choose something better than the system that's destroying them. This is our only shot at a reset. So... [-> 045] 
+
+[045][KEEPER] It's not about electricity. Together... we are going to kill the internet, Sarah. We are going to give people a chance for a total reset. Are you in? [-> 046]
+
+[046][PLAYER RESPONSE] 
+- yes [-> 047]
+- no [-> 052]
+
+[047][KEEPER] I knew I can rely on you, Sarah. I'll be in touch soon. [END CONVERSATION]
+
+[052] Well... At least I tried. You made your choice. You understand I cannot just let you walk away knowing my secrets, do you? Farewell, Sarah. You'll be missed. [END CONVERSATION]
